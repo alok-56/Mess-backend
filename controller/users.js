@@ -61,7 +61,6 @@ const Otpverification = async (req, res, next) => {
     }
 
     let user = await UserModal.findOne({ number: number });
-    console.log(user)
     if (user) {
       if (otp === usernumber.otp) {
         await otpmodel.findByIdAndDelete(usernumber._id);
