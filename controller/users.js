@@ -24,7 +24,6 @@ const OtpSend = async (req, res, next) => {
     // check number and create
     var otpfound;
     let usernumber = await otpmodel.findOne({ number: number });
-    console.log(usernumber);
     if (usernumber) {
       await UserModal.findByIdAndDelete(usernumber._id);
       otpfound = await otpmodel.create({
@@ -60,22 +59,42 @@ const Otpverification = async (req, res, next) => {
     if (!usernumber) {
       return next(new AppErr("number not found or otp expired", 404));
     }
-    if (otp === usernumber.otp) {
-      await otpmodel.findByIdAndDelete(usernumber._id);
-      let user = await UserModal.create({
-        number: number,
-        role: "users",
-        isBlocked: false,
-      });
-      let token = await generateToken(user._id);
-      return res.status(200).json({
-        status: "success",
-        message: "Otp verified sucessfully",
-        data: user,
-        token: token,
-      });
+
+    let user = await UserModal.findOne({ number: number });
+    console.log(user)
+    if (user) {
+      if (otp === usernumber.otp) {
+        await otpmodel.findByIdAndDelete(usernumber._id);
+        let token = await generateToken(user._id);
+        return res.status(200).json({
+          status: "success",
+          message: "Otp verified sucessfully",
+          data: user,
+          token: token,
+          userexisit:true
+        });
+      } else {
+        return next(new AppErr("Invailed Otp", 400));
+      }
     } else {
-      return next(new AppErr("Invailed Otp", 400));
+      if (otp === usernumber.otp) {
+        await otpmodel.findByIdAndDelete(usernumber._id);
+        let usercreated = await UserModal.create({
+          number: number,
+          role: "users",
+          isBlocked: false,
+        });
+        let token = await generateToken(usercreated._id);
+        return res.status(200).json({
+          status: "success",
+          message: "Otp verified sucessfully",
+          data: usercreated,
+          token: token,
+          userexisit:false
+        });
+      } else {
+        return next(new AppErr("Invailed Otp", 400));
+      }
     }
   } catch (error) {
     return next(new AppErr(error.message, 500));

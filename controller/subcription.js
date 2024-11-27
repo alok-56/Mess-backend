@@ -316,7 +316,6 @@ const renewpayment = async (req, res, next) => {
 
 // update payment details
 
-
 module.exports = {
   createOrder,
   handlepayment,

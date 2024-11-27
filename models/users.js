@@ -15,9 +15,11 @@ const Userschma = new mongoose.Schema(
     password: {
       type: String,
     },
-    suscription: [{
-      type: String
-    }],
+    suscription: [
+      {
+        type: String,
+      },
+    ],
     role: {
       type: String,
       required: true,
