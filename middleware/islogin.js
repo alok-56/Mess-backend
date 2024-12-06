@@ -5,6 +5,7 @@ const UserModal = require("../models/users");
 const islogin = async (req, res, next) => {
   try {
     const authHeader = req.headers.token;
+    console.log(authHeader);
     if (!authHeader) {
       return next(new AppErr("unAuthorized User", 404));
     }

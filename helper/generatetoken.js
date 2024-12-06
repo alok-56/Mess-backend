@@ -5,7 +5,7 @@ const generateToken = async (id) => {
   try {
     return jwt.sign(
       { id: id },
-      process.env.JWT_SECRECT,
+      "MESS SOFTWARE",
       { algorithm: "HS256" },
       { expiresIn: "24h" }
     );
