@@ -29,7 +29,6 @@ locationRouter.patch(
     "/getall",
     islogin,
     isblocked,
-    isadmin,
     GetAlllocation
   );
 
@@ -37,7 +36,6 @@ locationRouter.patch(
     "/get/:id",
     islogin,
     isblocked,
-    isadmin,
    Getsinglelocation
   );
 
