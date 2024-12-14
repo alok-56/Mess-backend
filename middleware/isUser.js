@@ -18,7 +18,7 @@ const isUser=async(req,res,next)=>{
           return next(new AppErr("user not found", 404));
         }
         if(user.role!=="users"){
-            return next(new AppErr("access denied",403))
+            return next(new AppErr("access denied for users",403))
         }
         next();
       } catch (error) {
