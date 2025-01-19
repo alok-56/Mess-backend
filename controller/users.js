@@ -5,6 +5,7 @@ const { findByIdAndDelete } = require("../models/users");
 const UserModal = require("../models/users");
 const generateToken = require("../helper/generatetoken");
 const { getPagination } = require("../helper/pagination");
+const paymentmodal = require("../models/payment");
 
 // Otp send
 const OtpSend = async (req, res, next) => {
@@ -70,7 +71,7 @@ const Otpverification = async (req, res, next) => {
           message: "Otp verified sucessfully",
           data: user,
           token: token,
-          userexisit:true
+          userexisit: true,
         });
       } else {
         return next(new AppErr("Invailed Otp", 400));
@@ -89,7 +90,7 @@ const Otpverification = async (req, res, next) => {
           message: "Otp verified sucessfully",
           data: usercreated,
           token: token,
-          userexisit:false
+          userexisit: false,
         });
       } else {
         return next(new AppErr("Invailed Otp", 400));
@@ -344,6 +345,23 @@ const LoginUser = async (req, res, next) => {
   }
 };
 
+// Get Transacation uses wise
+
+const GetTransaction = async (req, res, next) => {
+  try {
+    let id = req.users;
+    let trans = await paymentmodal.find({ userId: id });
+
+    return res.status(200).json({
+      status: "success",
+      message: "Transaction Fetched successfully",
+      data: trans,
+    });
+  } catch (error) {
+    return next(new AppErr(error.message, 500));
+  }
+};
+
 module.exports = {
   OtpSend,
   Otpverification,
@@ -355,4 +373,5 @@ module.exports = {
   createAdmin,
   createdeliveryboy,
   LoginUser,
+  GetTransaction
 };

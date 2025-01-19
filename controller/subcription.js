@@ -26,7 +26,8 @@ const createOrder = async (req, res, next) => {
       key_id: process.env.KEY_ID,
       key_secret: process.env.KEY_SECRET,
     });
-    let { planId, locationId, deliveryaddress, foodtype, coupon } = req.body;
+    let { planId, locationId, deliveryaddress, foodtype, coupon, address } =
+      req.body;
 
     let plan = await planmodal.findById(planId);
     if (!plan) {
@@ -46,6 +47,7 @@ const createOrder = async (req, res, next) => {
     //--coupon discount----//
     if (coupon) {
     }
+
     req.body.paidAmount = price;
     req.body.Bookingdate = new Date();
     req.body.lastBookingdate = new Date() + plan.duration;
@@ -63,11 +65,11 @@ const createOrder = async (req, res, next) => {
       deliveryaddress.lon
     );
 
-    if (distance + 1 > location.deliverydistance) {
-      return next(
-        new AppErr("Delivery not available for current location", 400)
-      );
-    }
+    // if (distance + 1 > location.deliverydistance) {
+    //   return next(
+    //     new AppErr("Delivery not available for current location", 400)
+    //   );
+    // }
 
     var options = {
       amount: price * 100,

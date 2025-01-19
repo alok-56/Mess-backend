@@ -52,6 +52,9 @@ const orderSchema = new mongoose.Schema(
       required: true,
       default: false,
     },
+    address: {
+      type: String,
+    },
   },
   {
     timestamps: true,

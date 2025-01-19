@@ -59,6 +59,9 @@ const subcriptionSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    address: {
+      type: String,
+    },
   },
   {
     timestamps: true,

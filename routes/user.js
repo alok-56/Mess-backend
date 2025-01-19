@@ -10,12 +10,15 @@ const {
   createAdmin,
   createdeliveryboy,
   LoginUser,
+  GetTransaction,
 } = require("../controller/users");
 const { body } = require("express-validator");
 const islogin = require("../middleware/islogin");
 const isUser = require("../middleware/isUser");
 const isblocked = require("../middleware/isblocked");
 const isadmin = require("../middleware/isAdmin");
+const { fetchOrderBasedOndate, fetchSubcriptioOrderBasedOndate, FetchAlltransaction } = require("../controller/admin");
+
 const userRouter = express.Router();
 
 userRouter.post(
@@ -58,6 +61,39 @@ userRouter.post(
   "/login",
   body("password").notEmpty().withMessage("password is required"),
   LoginUser
+);
+
+userRouter.get(
+  "/fetch/transaction",
+  islogin,
+  isblocked,
+  isUser,
+  GetTransaction
+);
+
+userRouter.get(
+  "/fetch/todayorder",
+  islogin,
+  isblocked,
+  isadmin,
+  fetchOrderBasedOndate
+);
+
+userRouter.get(
+  "/fetch/subsription/todayorder",
+  islogin,
+  isblocked,
+  isadmin,
+  fetchSubcriptioOrderBasedOndate
+);
+
+
+userRouter.get(
+  "/fetch/admin/payment",
+  islogin,
+  isblocked,
+  isadmin,
+  FetchAlltransaction
 );
 
 module.exports = userRouter;

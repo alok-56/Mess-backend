@@ -22,7 +22,7 @@ const dailyorder = async (req, res, next) => {
       key_id: process.env.KEY_ID,
       key_secret: process.env.KEY_SECRET,
     });
-    let { locationId, deliveryaddress, foodtype, coupon, paidAmount } =
+    let { locationId, deliveryaddress, foodtype, coupon, paidAmount, address } =
       req.body;
 
     //--coupon discount----//
@@ -68,7 +68,7 @@ const dailyorder = async (req, res, next) => {
         status: "success",
         message: "order created successfully",
         data: order,
-        sub: dailyorder,
+        order: dailyorder,
       });
     });
   } catch (error) {
@@ -164,10 +164,6 @@ const Getallorder = async (req, res, next) => {
     return next(new AppErr(error.message, 500));
   }
 };
-
-// update order details
-
-// update payment details
 
 module.exports = {
   dailyorder,
