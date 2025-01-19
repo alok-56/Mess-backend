@@ -17,7 +17,13 @@ const islogin = require("../middleware/islogin");
 const isUser = require("../middleware/isUser");
 const isblocked = require("../middleware/isblocked");
 const isadmin = require("../middleware/isAdmin");
-const { fetchOrderBasedOndate, fetchSubcriptioOrderBasedOndate, FetchAlltransaction } = require("../controller/admin");
+const {
+  fetchOrderBasedOndate,
+  fetchSubcriptioOrderBasedOndate,
+  FetchAlltransaction,
+  UpdateOrderAndAssign,
+  getAssignedDetails,
+} = require("../controller/admin");
 
 const userRouter = express.Router();
 
@@ -87,13 +93,30 @@ userRouter.get(
   fetchSubcriptioOrderBasedOndate
 );
 
-
 userRouter.get(
   "/fetch/admin/payment",
   islogin,
   isblocked,
   isadmin,
   FetchAlltransaction
+);
+
+userRouter.post(
+  "/assign/admin/assignedorder",
+  body("OrderId").notEmpty().withMessage("OrderId is required"),
+  body("DeliveryboyId").notEmpty().withMessage("DeliveryboyId is required"),
+  body("type").notEmpty().withMessage("type is required"),
+  islogin,
+  isblocked,
+  isadmin,
+  UpdateOrderAndAssign
+);
+
+userRouter.get(
+  "/fetch/order/delivery/history/:id",
+  islogin,
+  isblocked,
+  getAssignedDetails
 );
 
 module.exports = userRouter;

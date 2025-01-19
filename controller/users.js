@@ -279,7 +279,7 @@ const createdeliveryboy = async (req, res, next) => {
 
     return res.status(200).json({
       status: "success",
-      message: "Admin Created successfully",
+      message: "delivery Boy Created successfully",
       data: admin,
       token: token,
     });
@@ -373,5 +373,5 @@ module.exports = {
   createAdmin,
   createdeliveryboy,
   LoginUser,
-  GetTransaction
+  GetTransaction,
 };

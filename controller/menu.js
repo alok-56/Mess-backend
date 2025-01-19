@@ -204,24 +204,22 @@ const GetSinglemenu = async (req, res, next) => {
 };
 
 // Get menu location wise
-const menubylocation=async(req,res,next)=>{
+const menubylocation = async (req, res, next) => {
   try {
-    let {locationid}=req.params
-    if(!locationid){
-      return next(new AppErr("location Id is required",400))
+    let { locationid } = req.params;
+    if (!locationid) {
+      return next(new AppErr("location Id is required", 400));
     }
 
-    let menu=await menumodal.find({location:locationid})
+    let menu = await menumodal.find({ location: locationid });
 
     return res.status(200).json({
       status: "success",
       message: "Menu Fetched successfully",
       data: menu,
     });
-  } catch (error) {
-    
-  }
-}
+  } catch (error) {}
+};
 
 // update item
 
@@ -269,5 +267,5 @@ module.exports = {
   GetAllmenu,
   GetSinglemenu,
   updatemenuitem,
-  menubylocation
+  menubylocation,
 };

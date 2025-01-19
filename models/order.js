@@ -55,6 +55,11 @@ const orderSchema = new mongoose.Schema(
     address: {
       type: String,
     },
+    assigned: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
   {
     timestamps: true,

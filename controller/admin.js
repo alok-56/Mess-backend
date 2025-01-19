@@ -3,6 +3,8 @@ const AppErr = require("../helper/appError");
 const ordermodal = require("../models/order");
 const subcriptionmodal = require("../models/subcription");
 const paymentmodal = require("../models/payment");
+const UserModal = require("../models/users");
+const DeliveryModal = require("../models/delivery");
 
 // get all current time and date order
 const fetchOrderBasedOndate = async (req, res, next) => {
@@ -38,6 +40,7 @@ const fetchOrderBasedOndate = async (req, res, next) => {
     if (status !== undefined) {
       query.status = status === "true";
     }
+    query.assigned = false;
     let orders = await ordermodal.find(query);
 
     return res.status(200).json({
@@ -82,6 +85,8 @@ const fetchSubcriptioOrderBasedOndate = async (req, res, next) => {
     if (status !== undefined) {
       query.status = status === "true";
     }
+
+    query.assigned = false;
     let orders = await subcriptionmodal.find(query);
 
     return res.status(200).json({
@@ -139,14 +144,78 @@ const FetchAlltransaction = async (req, res, next) => {
   }
 };
 
-// get all deliver boy of location
+//  Update Order  and assign to delivery boy
+const UpdateOrderAndAssign = async (req, res) => {
+  try {
+    let err = validationResult(req);
+    if (err.errors.length > 0) {
+      return next(new AppErr(err.errors[0].msg, 403));
+    }
 
-// update each based on order and subcription and assign to delivery boy
+    let { OrderId, DeliveryboyId, type } = req.body;
 
-//
+    // check orderid
+    let sub = await subcriptionmodal.findById(OrderId);
+    let order = await ordermodal.findById(OrderId);
+    if (type === "order") {
+      if (!order) {
+        return next(new AppErr("Order not found", 404));
+      }
+    } else {
+      if (!sub) {
+        return next(new AppErr("Subcription not found", 404));
+      }
+    }
+
+    // check deliveryboyid
+    let delivery = await UserModal.findById(DeliveryboyId);
+    if (!delivery || delivery.role !== "deliveryboy") {
+      return next(new AppErr("delivery boy not found", 404));
+    }
+
+    // create delivery
+    let deliverycreation = await DeliveryModal.create(req.body);
+
+    if (type === "order") {
+      order.assigned = true;
+      await order.save();
+    } else {
+      sub.assigned = true;
+      await sub.save();
+    }
+    return res.status(200).json({
+      status: "success",
+      message: "Order assigned successfully",
+      data: deliverycreation,
+    });
+  } catch (error) {
+    return next(new AppErr(error.message, 500));
+  }
+};
+
+//  GetAssigedDetails of order
+
+const getAssignedDetails = async (req, res, next) => {
+  try {
+    let { id } = req.params;
+
+    let delivery = await DeliveryModal.find({ OrderId: id }).populate(
+      "DeliveryboyId"
+    );
+    return res.status(200).json({
+      status: "success",
+      message: "delivery details fetched successfully",
+      data: delivery,
+    });
+  } catch (error) {
+    next(new AppErr(error.message, 500));
+  }
+};
 
 module.exports = {
   fetchOrderBasedOndate,
   fetchSubcriptioOrderBasedOndate,
   FetchAlltransaction,
+  UpdateOrderAndAssign,
+  getAssignedDetails,
 };
