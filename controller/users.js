@@ -15,7 +15,7 @@ const OtpSend = async (req, res, next) => {
     if (err.errors.length > 0) {
       return next(new AppErr(err.errors[0].msg, 403));
     }
-    let { number } = req.body;
+    let { number, otp } = req.body;
     if (number.toString().length !== 10) {
       return next(new AppErr("Number must be 10 digit", 403));
     }
@@ -29,12 +29,12 @@ const OtpSend = async (req, res, next) => {
       await UserModal.findByIdAndDelete(usernumber._id);
       otpfound = await otpmodel.create({
         number: number,
-        otp: 12345,
+        otp: otp,
       });
     } else {
       otpfound = await otpmodel.create({
         number: number,
-        otp: 12345,
+        otp: otp,
       });
     }
 
