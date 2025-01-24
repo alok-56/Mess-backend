@@ -3,6 +3,7 @@ const AppErr = require("../helper/appError");
 const { Distancecalculation } = require("../helper/distancecalculation");
 const locationmodal = require("../models/location");
 const ordermodal = require("../models/order");
+const paymentmodal = require("../models/payment");  //added by rajesh
 const UserModal = require("../models/users");
 const crypto = require("crypto");
 const Razorpay = require("razorpay");
