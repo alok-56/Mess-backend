@@ -67,7 +67,7 @@ const dailyorder = async (req, res, next) => {
       let dailyorder = await ordermodal.create(req.body);
       return res.status(200).json({
         status: "success",
-        message: "order created successfully",
+        message: "order created successfully", 
         data: order,
         order: dailyorder,
       });
@@ -125,7 +125,7 @@ const paydailyorder = async (req, res, next) => {
 
       res.status(200).json({
         status: "success",
-        message: "subcription created successfully",
+        message: "Order created successfully",
         data: pay,
       });
     } else {
@@ -158,7 +158,7 @@ const Getallorder = async (req, res, next) => {
     let order = await ordermodal.find().populate("paymentId");
     return res.status(200).json({
       status: "success",
-      message: "subcription Fetched successfully",
+      message: "Order Fetched successfully",
       data: order,
     });
   } catch (error) {
