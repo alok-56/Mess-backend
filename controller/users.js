@@ -324,19 +324,19 @@ const LoginUser = async (req, res, next) => {
 
     if (email) {
       let emailfound = await UserModal.findOne({ email: email });
-      if (emailfound) {
+      if (!emailfound) {
         return next(new AppErr("email not found", 400));
       }
       if (emailfound.password !== password) {
         return next(new AppErr("Password does not matched", 400));
       }
 
-      let token = await generateToken(numberfound._id);
+      let token = await generateToken(emailfound._id);
 
       return res.status(200).json({
         status: "success",
         message: "Loged In successfully",
-        data: numberfound,
+        data: emailfound,
         token: token,
       });
     }

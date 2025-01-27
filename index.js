@@ -13,6 +13,7 @@ const menuRouter = require("./routes/menu");
 const planRouter = require("./routes/plan");
 const subcriptionRouter = require("./routes/subcription");
 const orderRouter = require("./routes/order");
+const deliveryRouter = require("./routes/delivery");
 require("dotenv").config();
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/api/v1/menu", menuRouter);
 app.use("/api/v1/plan", planRouter);
 app.use("/api/v1/subcription",subcriptionRouter)
 app.use("/api/v1/order",orderRouter)
+app.use("/api/v1/delivery",deliveryRouter)
 
 //Not Found Route Page
 app.use("*", (req, res, next) => {

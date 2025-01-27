@@ -1,7 +1,74 @@
+const { validationResult } = require("express-validator");
 const AppErr = require("../helper/appError");
 const DeliveryModal = require("../models/delivery");
 const ordermodal = require("../models/order");
 const subcriptionmodal = require("../models/subcription");
+const UserModal = require("../models/users");
+const generateToken = require("../helper/generatetoken");
+
+// login api
+
+const deliveryboylogin = async (req, res, next) => {
+  try {
+    // validation
+    let err = validationResult(req);
+    if (err.errors.length > 0) {
+      return next(new AppErr(err.errors[0].msg, 403));
+    }
+
+    let { number, email, password } = req.body;
+
+    if (!number && !email) {
+      return next(new AppErr("number or email is required", 400));
+    }
+
+    if (number) {
+      let numberfound = await UserModal.findOne({ number: number });
+      if (!numberfound) {
+        return next(new AppErr("Number not found", 400));
+      }
+      if (numberfound.password !== password) {
+        return next(new AppErr("Password does not matched", 400));
+      }
+      if (numberfound.role !== "deliveryboy") {
+        return next(new AppErr("Your don't not access", 400));
+      }
+      let token = await generateToken(numberfound._id);
+      return res.status(200).json({
+        status: "success",
+        message: "Loged In successfully",
+        data: numberfound,
+        token: token,
+      });
+    }
+
+    if (email) {
+      let emailfound = await UserModal.findOne({ email: email });
+      
+      if (!emailfound) {
+        return next(new AppErr("email not found", 400));
+      }
+      if (emailfound.password !== password) {
+        return next(new AppErr("Password does not matched", 400));
+      }
+
+      if (emailfound.role !== "deliveryboy") {
+        return next(new AppErr("Your don't not access", 400));
+      }
+
+      let token = await generateToken(emailfound._id);
+
+      return res.status(200).json({
+        status: "success",
+        message: "Loged In successfully",
+        data: emailfound,
+        token: token,
+      });
+    }
+  } catch (error) {
+    return next(new AppErr(error.message));
+  }
+};
 
 // get my assigned today order
 const GetTodaymyOrder = async (req, res, next) => {
@@ -78,7 +145,22 @@ const UpdateOrderbyDeliveryBoy = async (req, res, next) => {
   }
 };
 
+const GetAlldeliveryboy = async (req, res, next) => {
+  try {
+    let response = await UserModal.find({ role: "deliveryboy" });
+    return res.status(200).json({
+      status: "success",
+      message: "delivery Fetched successfully",
+      data: response,
+    });
+  } catch (error) {
+    return next(new AppErr(error.message, 500));
+  }
+};
+
 module.exports = {
   GetTodaymyOrder,
   UpdateOrderbyDeliveryBoy,
+  deliveryboylogin,
+  GetAlldeliveryboy,
 };
